@@ -1,0 +1,13 @@
+.container {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  padding: 1rem;
+  width: fit-content;
+  cursor: grab;
+}
+
+.name {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
