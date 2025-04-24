@@ -34,7 +34,7 @@ const Dropzone = ({ className, children, preview, isDroppable, onDrop }) => {
       }}
     >
       {children}
-      {isDraggingOver && preview}
+      {isDroppable && isDraggingOver && preview}
     </div>
   );
 };

@@ -17,38 +17,45 @@ const IAMProvider = ({ children }) => {
     },
   ]);
 
-  const handleDragIdentity = (target) => {
-    console.log("handleDragIdentity");
-
+  const handleDragDropIdentity = (target) => {
     const addOrRemove = (authorization) => {
       if (authorization.name === target) {
-        authorization.identities.push(draggingIAM.value);
+        return {
+          ...authorization,
+          identities: [...authorization.identities, draggingIAM.value],
+        };
       }
 
       if (authorization.name === draggingIAM.source) {
-        authorization.identities = authorization.identities.filter(
-          (identity) => identity !== draggingIAM.value
-        );
+        return {
+          ...authorization,
+          identities: authorization.identities.filter(
+            (identity) => identity !== draggingIAM.value
+          ),
+        };
       }
 
-      if (authorization.child) {
-        authorization.child = addOrRemove(authorization.child);
-      }
-
-      return authorization;
+      return {
+        ...authorization,
+        child: authorization.child ? addOrRemove(authorization.child) : null,
+      };
     };
 
-    const newAuthorization = authorizations.map((authorization) =>
-      addOrRemove(authorization)
+    setAuthorizations((prevState) =>
+      prevState.map((authorization) => addOrRemove(authorization))
     );
 
-    setAuthorizations(newAuthorization);
+    setIdentities((prevState) => {
+      if (draggingIAM.source === "unassigned") {
+        return prevState.filter((identity) => identity !== draggingIAM.value);
+      }
 
-    if (draggingIAM.source === "unassigned") {
-      setIdentities((prevState) =>
-        prevState.filter((identity) => identity !== draggingIAM.value)
-      );
-    }
+      if (target === "unassigned") {
+        return [...prevState, draggingIAM.value];
+      }
+
+      return prevState;
+    });
 
     setDraggingIAM(null);
   };
@@ -58,7 +65,7 @@ const IAMProvider = ({ children }) => {
       value={{
         authorizations,
         setAuthorizations,
-        handleDragIdentity,
+        handleDragDropIdentity,
         identities,
         setIdentities,
         draggingIAM,
